@@ -62,7 +62,7 @@
             }).then(response => response.json())
             .then(response => {
                 if (response.hasinbd == 1){
-                    setCookie(response.n, response.ci, {secure: true, 'max-age': 60*60*24*365, 'log': 0})
+                    setCookie(response.n, response.ci, {'max-age': 60*60*24*365})
                     window.open(ip + "/keyword", "_self")
                 }else{
                     window.alert("Такого ID нет в доступе! Подойдите к администратору.")

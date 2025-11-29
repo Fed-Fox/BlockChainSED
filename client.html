@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Передача Документов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card bg-dark-subtle">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Отправить Документ</h2>
+                        <form id="sendForm">
+                            <div class="mb-3">
+                                <label for="sender" class="form-label">Отправитель:</label>
+                                <input type="text" class="form-control" id="sender" name="sender">
+                            </div>
+                            <div class="mb-3">
+                                <label for="receiver" class="form-label">Получатель:</label>
+                                <input type="text" class="form-control" id="receiver" name="receiver">
+                            </div>
+                            <div class="mb-3">
+                                <label for="document" class="form-label">Документ:</label>
+                                <input type="file" class="form-control" id="document" name="document">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card bg-dark-subtle">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Полученные Документы</h2>
+                        <ul id="receivedDocuments" class="list-group list-group-flush">
+                            <!-- Данные будут загружаться динамически -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('sendForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const sender = document.getElementById('sender').value;
+            const receiver = document.getElementById('receiver').value;
+            const document = document.getElementById('document').files[0];
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const documentContent = e.target.result;
+
+                fetch('http://localhost:5000/send_document', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sender: sender,
+                        receiver: receiver,
+                        document: documentContent
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Документ отправлен:', data);
+                });
+            };
+            reader.readAsText(document);
+        });
+
+        function loadDocuments(receiver) {
+            fetch('http://localhost:5000/get_documents', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    receiver: receiver
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const receivedDocuments = document.getElementById('receivedDocuments');
+                receivedDocuments.innerHTML = '';
+                data.documents.forEach(doc => {
+                    const li = document.createElement('li');
+                    li.textContent = doc;
+                    receivedDocuments.appendChild(li);
+                });
+            });
+        }
+
+        // Пример загрузки документов для текущего пользователя
+        const currentUser = '0xReceiverAddress'; // Замените на адрес текущего пользователя
+        loadDocuments(currentUser);
+    </script>
+</body>
+</html>

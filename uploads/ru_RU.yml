@@ -1,0 +1,73 @@
+#КОМАНДЫ
+
+cmd-ffa-desc: "Выйти на арену"
+
+ffa-form-title: "FFA"
+ffa-form-desc: "выберите режим игры"
+ffa-form-buttons: ["FFA", "NODEBOFF", "BOXING"]
+
+cmd-spawn-desc: "Выйти с арены"
+
+cmd-no-prem: "Нет прав на использование этой команды!"
+cmd-only-player: "Эту команду можно исполнять только игроком"
+
+
+#ПРЕДМЕТЫ
+
+items-disorientation-name: "§l§3[*] Дизориентация"
+items-disorientation-desc: "§7При клике §fПКМ§7 создаёт звуковую волну вокруг тебя на §f10 блоков§7, а она выдаёт несколько сильных побочных эффектов на игроков"
+
+items-trap-name: "§l§0[*] Трапка"
+items-trap-desc: "При клике ПКМ создает коробку для битвы"
+
+items-talisman-krushityel-name: "Талисман Крушителя"
+items-talisman-krushityel-desc: "+4 урона +4 здоровья +2 броня"
+
+items-talisman-imperii-name: "Талисман Империи"
+items-talisman-imperii-desc: "+7урона +10% скорости движения -2хп"
+
+items-talisman-titan-name: "Талисман Титана"
+items-talisman-titan-desc: "+3 броня -40% скорости движения"
+
+items-exp-bottle-name: "Бутылка починки"
+items-exp-bottle-desc: "чинит 10% брони"
+
+
+item-kd: "Этот предмет будет доступен через %kd% секунд"
+
+
+#КД ПРИ АТТАКЕ
+
+combat-message: "Вы в бою с игроком %player% до конца %time% сек"
+cmd-no-use-in-combat: "Вы не можете использовать команды во время боя"
+
+
+#BOXING
+
+player-in-boxing: "Игрок %name% сейчас дерётся с другим игроком"
+you-in-boxing: "Вы сейчас дерётесь с другим игроком"
+info-show: "%name% | %your-hits%/%aponent-hits%"
+
+
+#SCOREBOARD
+
+scoreboard-title: "§vEmpirePvP"
+scoreboard-text:
+  - "§4╔══════════"
+  - "§4‖═ §6%name%"
+  - "§4‖ §fРанг: §eИгрок"
+  - "§4‖ §fТокенов: §a0"
+  - "§4‖"
+  - "§4‖═ §6Статистика"
+  - "§4‖ §fУбийств: §e%kills%"
+  - "§4‖ §fСмертей: §c%deaths%"
+  - "§4‖ §fНаиграно: §3%time%"
+  - "§4‖ "
+  - "§4‖═ §fДонат §a/don"
+  - "§4╚══════════"
+
+time-sec: "c"
+time-min: "м"
+time-hour: "ч"
+time-day: "д"
+

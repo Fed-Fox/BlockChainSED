@@ -67,7 +67,7 @@ def getUserData():
             if (user["data"]["uid"] == id):
                 return jsonify({"n": "Set-Cookie", "ci": user["data"]["cookie-id"], "hasinbd": True, "status": "success"})
 
-        return jsonify({"hasinbd": False, "status": "success"})
+    return jsonify({"hasinbd": False, "status": "success"})
     
 
 @app.route('/addMember/', methods=['POST'])

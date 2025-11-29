@@ -10,24 +10,13 @@
         {
             "index": 2,
             "previous_hash": "0",
-            "timestamp": 1764440300.4307263,
+            "timestamp": 1764452129.955582,
             "data": {
-                "document": "kits.yml",
-                "to": "U-0000",
-                "from": "U-0002"
-            },
-            "hash": "258d86e0b20d1bfe8c275278cf9cb9a57fdc679f193c3925b352549540db1cea"
-        },
-        {
-            "index": 3,
-            "previous_hash": "258d86e0b20d1bfe8c275278cf9cb9a57fdc679f193c3925b352549540db1cea",
-            "timestamp": 1764440359.3725724,
-            "data": {
-                "document": "ArenaPlugin.jar",
+                "document": "ru_RU.yml",
                 "to": "U-0001",
                 "from": "U-0000"
             },
-            "hash": "5fa135ffff8f8594ad43b0b0e7ea4ee7ba635cb704d1e1243b71220aa184a954"
+            "hash": "41a03ec8dca1909c434d2da7048c881f613d6ef9482736df3114728367e9d07c"
         }
     ]
 }
