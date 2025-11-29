@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доп. защита</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #212529;
+            color: #e9ecef;
+        }
+        .custom-file-input {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container card bg-dark border-secondary" style="width: 25%; display: flex; align-items: center; margin-top: 300px;">
+        <div class="card-body">
+            <h2 class="card-title text-light mb-2" style="text-align: center;" id="title">Ключевое слово</h2>
+            <form id="keywordForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="to" class="form-label">Введите ключевое слово</label>
+                    <input type="text"style="width: 100%;" class="form-control bg-dark text-light border-secondary" id="word" name="word" placeholder="ваше ключевое слово">
+                </div>
+                <button type="submit" class="btn btn-success">войти</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let ip = ""
+
+        fetch('/getIP/', {
+            method: 'GET'
+        }).then(response => response.json())
+        .then(response => {
+            ip = "http://" + response.ip + ":" + response.port
+        })
+        .catch(error => {});
+
+        fetch('/autoreg/', {
+            method: 'GET'
+        }).then(response => response.json())
+        .then(response => {
+            if (response.hasinbd == 1){
+                window.open(ip + "/doc", "_self")
+            }else if (response.hasinbd == -1){
+                window.open(ip, "_self")
+            }
+        })
+        .catch(error => {});
+
+        document.getElementById('keywordForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/keyword/', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+            .then(response => {
+                if (response.success == 1){
+                    window.open(ip + "/doc", "_self")
+                }else if (response.success == 0){
+                    window.alert("Кодовое слово неверно")
+                }
+            })
+            .catch(error => {});
+        });
+
+        if (hasCookie("Set-Cookie")){
+            fetch('/getName/', {
+                method: 'GET'
+            }).then(response => response.json())
+            .then(response => {
+                document.getElementById("title").innerText = "Ключевое слово\n(" + response.fullname + ")"
+            })
+            .catch(error => {});
+        }
+
+        function hasCookie(name) {  
+            return document.cookie.split(';').some(c => c.trim().startsWith(name + '='));  
+        }  
+    </script>
+</body>
+</html>

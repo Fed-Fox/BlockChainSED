@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Передача документов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #212529;
+            color: #e9ecef;
+        }
+        .custom-file-input {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="addMemberForm" style="position: absolute; z-index: 100; display: none; justify-content: center; width: 100%; height: 100%; align-items: center; background-color: #1d1e1f7f; backdrop-filter: blur(5px);">
+        <div style="background-color: #282d31; width: 30%; padding: 20px; height: 50%; border-radius: 10px;">
+            <div style="display: flex; justify-content: space-between;">
+                <h2 class="card-title text-light mb-4" style="font-size: 25px;">Отправить документ</h2>
+                <button style="margin-left: 10px; font-size: 14px; height: 30px;" type="" class="btn" onclick="closeAddMember()">закрыть</button>
+            </div>
+            <form id="addMember" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="id" class="form-label">ID</label>
+                    <input type="text" class="form-control bg-dark text-light border-secondary" id="uid" name="uid" placeholder="Введите ID получателя">
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Имя</label>
+                    <input type="text" class="form-control bg-dark text-light border-secondary" id="name" name="name" placeholder="Введите имя пользователя">
+                </div>
+                <div class="mb-3">
+                    <label for="surname" class="form-label">Фамилия</label>
+                    <input type="text" class="form-control bg-dark text-light border-secondary" id="surname" name="surname" placeholder="Введите фамилия получателя">
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Привелегия</label>
+                    <select id="priv" name="priv">  
+                        <option value="default">Стандарт</option>  
+                        <option value="admin">Админ</option>   
+                    </select>  
+                </div>
+                <button type="submit" class="btn btn-success">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="card bg-dark border-secondary">
+                <div class="card-body">
+                    <div style="display: flex; justify-content: space-between;">
+                        <h2 class="card-title text-light mb-4" id="title">Отправить документ</h2>
+                        <button style="margin-left: 10px; font-size: 15px; height: 40px;" type="" class="btn" onclick="showAddMember()" id="addMemberButtom">Добавить пользователя</button>
+                    </div>
+                    <form id="sendForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="document" class="form-label">Выберите документ</label>
+                            <input type="file" class="form-control bg-dark text-light border-secondary" id="document" name="document">
+                        </div>
+                        <div class="mb-3">
+                            <label for="to" class="form-label">Имя и Фамилия получателя</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" id="to" name="to" placeholder="Введите ИФ получателя">
+                        </div>
+                        <button type="submit" class="btn btn-success">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="card bg-dark border-secondary">
+                <div class="card-body">
+                    <div style="display: flex; align-items: center;">
+                        <h2 class="card-title text-light mb-4">Полученные документы</h2>
+                        <button style="margin-left: 10px; margin-top: -20px; font-size: 20px;" type="" class="btn" onclick="updateDocumentsButton()">обновить</button>
+                    </div>
+                    <div id="receivedDocuments" class="list-group list-group-flush"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-light">Успешно</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-light">
+                    Документ успешно отправлен
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let ip = ""
+
+        fetch('/getIP/', {
+            method: 'GET'
+        }).then(response => response.json())
+        .then(response => {
+            ip = "http://" + response.ip + ":" + response.port
+        })
+        .catch(error => {});
+
+        fetch('/autoreg/', {
+            method: 'GET'
+        }).then(response => response.json())
+        .then(response => {
+            if (response.hasinbd == 0){
+                window.open(ip + "/keyword", "_self")
+            }else if(response.hasinbd == -1){
+                window.open(ip, "_self")
+            }
+        })
+        .catch(error => {
+            alert('Ошибка при отправке документа');
+        });
+
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+
+        document.getElementById('sendForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/send_document', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+              .then(data => {
+                if (data.res){
+                    successModal.show();
+                }else{
+                    alert("Пользователь не найден!")
+                }
+                
+              })
+              .catch(error => {
+                  alert('Ошибка при отправке документа');
+              });
+        });
+
+        function updateDocumentsButton(){
+            fetch(`/getDocuments/`, {
+                method: 'POST'
+            }).then(response => response.json())
+            .then(documents => {
+                const receivedDocuments = document.getElementById('receivedDocuments');
+                receivedDocuments.innerHTML = '';
+                documents.forEach(doc => {
+                    receivedDocuments.innerHTML += `
+                        <div class="list-group-item bg-dark text-light border-secondary d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">Документ: ${doc.document}</h5>
+                                <small class="text-muted">От: ${doc.from}</small>
+                            </div>
+                            <a href="/download/${doc.document}" class="btn btn-success btn-sm">Скачать</a>
+                        </div>
+                    `;
+                });
+            }).catch(error => {
+                alert('Ошибка при получении документов');
+            });
+        }
+    </script>
+
+    <script>
+        function closeAddMember(){
+            document.getElementById("addMemberForm").style.display = "none";
+        }
+
+        function showAddMember(){
+            document.getElementById("addMemberForm").style.display = "flex";
+        }
+
+        if (hasCookie("Set-Cookie")){
+            updateDocumentsButton();
+
+            fetch('/isadmin/', {
+                method: 'GET'
+            }).then(response => response.json())
+            .then(response => {
+                if (response.res){
+                    document.getElementById("addMemberButtom").style.display = "block"
+                }else{
+                    document.getElementById("addMemberButtom").style.display = "none"
+                }
+            })
+            .catch(error => {
+                alert('Ошибка при отправке документа');
+            });
+
+            fetch('/getName/', {
+                method: 'GET'
+            }).then(response => response.json())
+            .then(response => {
+                document.getElementById("title").innerText = "Отправить документ (вы: " + response.fullname + ")"
+            })
+            .catch(error => {
+                alert('Ошибка при отправке документа');
+            });
+        }
+
+        function hasCookie(name) {  
+            return document.cookie.split(';').some(c => c.trim().startsWith(name + '='));  
+        }  
+
+        document.getElementById('addMemberForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/addMember/', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+            .then(response => {
+                if (response.res == 1){
+                    alert("Добавлен новый пользователь!")
+                }else if (response.res == 0){
+                    alert("Нет прав!")
+                }else if (response.res == -1){
+                    alert("Такой пользователь уже есть")
+                }
+                closeAddMember()
+            })
+            .catch(error => {
+                alert('Ошибка при отправке документа');
+            });
+        });
+    </script>
+</body>
+</html>

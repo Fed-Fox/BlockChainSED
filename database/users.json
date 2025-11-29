@@ -1,0 +1,15 @@
+{
+    "users": [
+        {
+            "data": {
+                "uid": "U-0000",
+                "name": "\u0424\u0451\u0434\u043e\u0440",
+                "surname": "\u0414\u043e\u043b\u0433\u0430\u043d\u043e\u0432",
+                "priv": "admin",
+                "keyword": "fedfox",
+                "cookie-id": "000000",
+                "logined": false
+            }
+        }
+    ]
+}
